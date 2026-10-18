@@ -477,7 +477,6 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
         ol.push({ label: "Cleanup & catch-up (" + parts.join(" + ") + ")", text: "Starting at " + money(e.cleanup.base) });
       }
       h += lines(ol.concat(e.oneTimeLines));
-      if (e.cleanup) h += '<p class="note">Cleanup pricing may change once I\'ve reviewed your records.</p>';
     } else h += '<p class="none">Nothing one-time based on your answers.</p>';
     h += "</div>";
 
