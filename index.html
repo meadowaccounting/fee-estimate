@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bookkeeping Fee Estimate | Meadow Accounting &amp; Advisory</title>
-<meta name="description" content="Get a quick, no-obligation estimate for bookkeeping with Meadow Accounting &amp; Advisory. Everything is calculated in your browser; nothing is collected.">
+<meta name="description" content="Get a quick, no-obligation estimate for bookkeeping with Meadow Accounting &amp; Advisory. Answer a few questions and see a ballpark price right away.">
 <meta name="robots" content="index,follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,6 +103,24 @@
   .cta{display:block;text-align:center;background:var(--lavender);color:var(--olive);text-decoration:none;font-family:var(--body);font-weight:600;font-size:1.15rem;padding:1.15rem 2rem;margin:1.5rem 0 .75rem;border:2px solid var(--lavender);transition:background .15s,color .15s}
   .cta:hover{background:transparent;color:var(--cream)}
   .cta:focus-visible{outline-color:var(--gold)}
+  .send{border-top:1px solid rgba(246,244,238,.25);margin-top:1.25rem;padding-top:1.25rem}
+  .send h3{font-size:1.15rem;margin:0 0 .35rem;color:var(--cream)}
+  .send-intro{font-size:1rem;line-height:1.45;margin:0 0 1rem;opacity:.92}
+  .send-fields{display:grid;gap:.75rem}
+  .sfield{display:block;font-weight:600;font-size:1.02rem}
+  .sfield .req{color:var(--gold)}
+  .sfield .opt{font-weight:400;opacity:.8}
+  .sfield input{display:block;width:100%;margin-top:.3rem;font:inherit;font-weight:400;color:var(--olive);background:var(--cream);border:1px solid var(--cream);border-radius:0;padding:.55rem .75rem;min-height:2.9rem}
+  .sfield input[aria-invalid="true"]{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .send-btn{display:block;width:100%;margin-top:1rem;background:var(--cream);color:var(--olive);border:2px solid var(--cream);border-radius:0;font-family:var(--body);font-weight:600;font-size:1.1rem;padding:1rem 1.5rem;cursor:pointer;transition:background .15s,color .15s}
+  .send-btn:hover{background:transparent;color:var(--cream)}
+  .send-btn:focus-visible{outline-color:var(--gold)}
+  .send-btn:disabled{opacity:.6;cursor:wait}
+  .send-status{margin:.75rem 0 0;font-size:1rem;line-height:1.45;min-height:0}
+  .send-status:empty{display:none}
+  .send-status.ok{background:var(--gold);color:var(--olive);padding:.75rem 1rem}
+  .send-status.err{border:1px solid var(--gold);padding:.75rem 1rem}
+  .send-done .send-fields,.send-done .send-btn,.send-done .send-intro{display:none}
   .disclaimer{font-size:.95rem;opacity:.88;margin:0}
   .custom{background:var(--cream);color:var(--olive);padding:1.25rem;margin-bottom:1rem}
   .custom p{margin:.25rem 0 0}
@@ -282,6 +300,24 @@
   <h2 id="resultsTitle">Your estimate</h2>
   <div id="results" aria-live="polite">
   </div>
+  <form class="send" id="sendForm" hidden novalidate>
+    <h3 id="sendTitle">Want me to follow up?</h3>
+    <p class="send-intro">Send your answers and estimate to me, and I'll reach out to talk through next steps. This sends your details to Meadow only; it doesn't email you a copy.</p>
+    <div class="send-fields">
+      <label class="sfield" for="sName">Name <span class="req" aria-hidden="true">*</span>
+        <input type="text" id="sName" name="name" autocomplete="name" required aria-required="true">
+      </label>
+      <label class="sfield" for="sEmail">Email <span class="req" aria-hidden="true">*</span>
+        <input type="email" id="sEmail" name="email" autocomplete="email" required aria-required="true">
+      </label>
+      <label class="sfield" for="sPhone">Phone <span class="opt">(optional)</span>
+        <input type="tel" id="sPhone" name="phone" autocomplete="tel">
+      </label>
+    </div>
+    <input type="checkbox" name="botcheck" id="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
+    <button type="submit" class="send-btn" id="sendBtn">Send my estimate to Meadow</button>
+    <p class="send-status" id="sendStatus" role="status" aria-live="polite"></p>
+  </form>
   <a class="cta" id="ctaLink" href="https://www.meadowaccounting.co/work-with-me" target="_blank" rel="noopener">Book a free consult</a>
   <p class="disclaimer">This is an estimate only, based on your answers. It is not a quote or an engagement. Your final price comes after a free consult or a $400 Diagnostic Review of your records, which is required before any cleanup work.</p>
 </aside>
@@ -444,7 +480,9 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
       if (!on && annual.checked) form.querySelector('input[name="cadence"][value="monthly"]').checked = true;
     }
 
+    lastAnswers = a; lastEstimate = null;
     if (answered < REQUIRED.length) {
+      sendForm.hidden = true;
       showAnnual(false);
       resultsEl.innerHTML = '<p class="progress">' + answered + " of " + REQUIRED.length + " questions answered. Your estimate will appear here once they're all done.</p>" +
         '<div class="bar" aria-hidden="true"><i style="width:' + Math.round(answered / REQUIRED.length * 100) + '%"></i></div>';
@@ -457,6 +495,7 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
       showAnnual(false);
       resultsEl.innerHTML = '<div class="custom" style="margin-top:0"><strong>Custom quote, let\'s talk.</strong><p>Your business has more moving parts than a standard package covers. That\'s a good thing! Book a free consult and I\'ll put together pricing built around how you actually operate.</p></div>';
       setBar("<strong>Custom quote</strong>");
+      lastEstimate = e; sendForm.hidden = false;
       return;
     }
 
@@ -481,8 +520,84 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
     h += "</div>";
 
     resultsEl.innerHTML = h;
+    lastEstimate = e; sendForm.hidden = false;
     setBar("<strong>Estimate</strong> &middot; from " + money(e.recurring) + "/" + ({ month: "mo", quarter: "qtr", year: "yr" })[per]);
   }
+
+  /* ---------- Send estimate to Meadow (Web3Forms; emails the firm only) ---------- */
+  var WEB3FORMS_URL = "https://api.web3forms.com/submit";
+  var WEB3FORMS_KEY = "4bd3b902-bd75-41b3-bb1e-a927f16ff143";
+  var sendForm = document.getElementById("sendForm"), sendBtn = document.getElementById("sendBtn"), sendStatus = document.getElementById("sendStatus");
+  var lastAnswers = null, lastEstimate = null;
+  var QUESTIONS = [
+    ["revenue", "Monthly revenue"], ["industry", "Industry"], ["streams", "Revenue streams"], ["inventory", "Tracks inventory"],
+    ["salesTax", "Collects sales tax"], ["accounts", "Accounts to reconcile"], ["processors", "Payment processors"],
+    ["workforce", "Team"], ["system", "Current bookkeeping system"], ["transfer", "Switching software / data transfer"],
+    ["hasGL", "Already set up in QBO or Xero"]
+  ];
+  function answerText(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.nextElementSibling.textContent.trim() : "";
+  }
+  function buildPayload(contact) {
+    var a = lastAnswers, e = lastEstimate, p = {
+      access_key: WEB3FORMS_KEY,
+      subject: "New fee estimate: " + contact.name,
+      from_name: "Meadow Fee Estimate",
+      replyto: contact.email,
+      botcheck: "",
+      name: contact.name, email: contact.email, phone: contact.phone || "(not provided)"
+    };
+    QUESTIONS.forEach(function (q) { p[q[1]] = answerText(q[0]); });
+    p["Additional entities"] = String(Math.max(0, Math.floor(Number(a.entities) || 0)));
+    p["Months behind this year"] = String(a.monthsBehind);
+    p["Prior years behind"] = String(a.yearsBehind);
+    if (e.custom) {
+      p["Billing frequency"] = answerText("cadence");
+      p["Ongoing fee estimate"] = "Custom quote (above standard scale)";
+      p["Cleanup starting at"] = "Custom quote";
+      p["One-time items"] = "Custom quote";
+    } else {
+      var per = { monthly: "month", quarterly: "quarter", annual: "year" }[e.cadence];
+      p["Billing frequency"] = { monthly: "Monthly", quarterly: "Quarterly", annual: "Annually" }[e.cadence];
+      p["Ongoing fee estimate"] = "Starting at " + money(e.recurring) + " / " + per;
+      p["Cleanup starting at"] = e.cleanup ? money(e.cleanup.base) + " (" + e.cleanup.months + " month(s) this year, " + e.cleanup.years + " prior year(s))" : "None (caught up)";
+      p["One-time items"] = e.oneTimeLines.length ? e.oneTimeLines.map(function (l) { return l.label + ": " + money(l.amount); }).join("; ") : "None";
+    }
+    p["INTERNAL points score"] = String(e.points);
+    p["INTERNAL tier"] = e.custom ? "Above scale (custom quote)" : e.tier;
+    return p;
+  }
+  function setStatus(msg, cls) { sendStatus.textContent = msg; sendStatus.className = "send-status" + (cls ? " " + cls : ""); }
+  sendForm.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (!lastEstimate || sendBtn.disabled) return;
+    var nameEl = document.getElementById("sName"), emailEl = document.getElementById("sEmail");
+    var contact = { name: nameEl.value.trim(), email: emailEl.value.trim(), phone: document.getElementById("sPhone").value.trim() };
+    var badName = !contact.name, badEmail = !contact.email || !emailEl.checkValidity();
+    nameEl.setAttribute("aria-invalid", badName ? "true" : "false");
+    emailEl.setAttribute("aria-invalid", badEmail ? "true" : "false");
+    if (badName || badEmail) {
+      setStatus(badName && badEmail ? "Please add your name and a valid email." : badName ? "Please add your name." : "Please add a valid email address.", "err");
+      (badName ? nameEl : emailEl).focus();
+      return;
+    }
+    if (document.getElementById("botcheck").checked) { setStatus("Thanks, I've got your details and will be in touch.", "ok"); sendForm.classList.add("send-done"); return; }
+    var payload = buildPayload(contact);
+    sendBtn.disabled = true; sendBtn.textContent = "Sending\u2026"; setStatus("");
+    fetch(WEB3FORMS_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.success !== false, j: j }; }); })
+      .then(function (res) {
+        if (res.ok) {
+          setStatus("Thanks, " + contact.name.split(/\s+/)[0] + "! I've got your details and estimate, and I'll be in touch soon. Can't wait? Book a free consult below.", "ok");
+          sendForm.classList.add("send-done");
+        } else throw new Error((res.j && res.j.message) || "send failed");
+      })
+      .catch(function () {
+        setStatus("Sorry, your estimate didn't send. Please try again in a moment, or book a free consult below.", "err");
+      })
+      .then(function () { sendBtn.disabled = false; sendBtn.textContent = "Send my estimate to Meadow"; });
+  });
 
   form.addEventListener("input", render);
   form.addEventListener("change", render);
