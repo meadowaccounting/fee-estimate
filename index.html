@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookkeeping Fee Estimate | Meadow Accounting &amp; Advisory</title>
+<meta name="description" content="Get a quick, no-obligation estimate for bookkeeping with Meadow Accounting &amp; Advisory. Everything is calculated in your browser; nothing is collected.">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+  /* Brand palette pulled from meadowaccounting.co (Squarespace theme variables) */
+  :root{
+    --cream:#f6f4ee;      /* site "white" 43,30%,95% */
+    --olive:#3c4337;      /* site "black"/dark accent 95,10%,24% */
+    --lavender:#c5b9d5;   /* site accent 266,25%,78% */
+    --gold:#e7d797;       /* site light accent 48,63%,75% */
+    --olive-70:rgba(60,67,55,.72);
+    --olive-15:rgba(60,67,55,.15);
+    --olive-08:rgba(60,67,55,.07);
+    --card:#fbfaf6;
+    --heading:"Marcellus","Minerva Modern",Georgia,serif;   /* site uses minerva-modern (Adobe Fonts) */
+    --body:"Crimson Pro","Freight Text Pro",Georgia,serif;   /* site uses freight-text-pro (Adobe Fonts) */
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--cream);color:var(--olive);font-family:var(--body);font-size:1.15rem;line-height:1.6;letter-spacing:.01em}
+  a{color:var(--olive)}
+  :focus-visible{outline:3px solid var(--olive);outline-offset:3px}
+  .skip{position:absolute;left:-999px;top:0;background:var(--olive);color:var(--cream);padding:.5rem 1rem;z-index:10}
+  .skip:focus{left:1rem}
+  h1,h2,h3,legend{font-family:var(--heading);font-weight:400;text-transform:uppercase;line-height:1.2;letter-spacing:0}
+  /* Header */
+  .site-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:6vw 4vw 4vw;max-width:1400px;margin:0 auto}
+  .wordmark{font-family:var(--heading);font-size:1.15rem;text-decoration:none;letter-spacing:.02em}
+  .back{font-size:1rem;text-decoration:none;border-bottom:1px solid var(--olive-70);white-space:nowrap}
+  @media(max-width:599px){.wordmark{font-size:1rem}.back{font-size:.95rem}}
+  @media(min-width:800px){.site-header{padding:2.5vw 4vw}}
+  /* Hero */
+  .hero{background:var(--olive);color:var(--cream);text-align:center;padding:3.5rem 6vw 3rem}
+  .hero h1{font-size:clamp(1.9rem,6vw,3.2rem);margin:0 0 .75rem}
+  .hero p{max-width:40rem;margin:0 auto;font-size:1.2rem;color:var(--cream)}
+  .hero .fine{margin-top:1rem;font-size:1rem;opacity:.85}
+  /* Layout */
+  main{max-width:1180px;margin:0 auto;padding:2rem 5vw 4rem}
+  .layout{display:grid;gap:2rem}
+  @media(min-width:960px){.layout{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.results{position:sticky;top:1.25rem}}
+  /* Form */
+  form{display:grid;gap:1.25rem}
+  .section{background:var(--card);border:1px solid var(--olive-15);padding:1.5rem 1.25rem}
+  @media(min-width:600px){.section{padding:1.75rem 2rem}}
+  .section>h2{font-size:1.35rem;margin:0 0 .25rem;display:flex;gap:.6rem;align-items:baseline}
+  .section>h2 .num{display:inline-grid;place-items:center;width:1.9rem;height:1.9rem;background:var(--lavender);font-size:1rem;flex:none}
+  .section>.intro{margin:0 0 1rem;color:var(--olive-70);font-size:1.05rem;line-height:1.45}
+  fieldset{border:0;margin:0 0 1.25rem;padding:0;min-width:0}
+  fieldset:last-child{margin-bottom:0}
+  legend{text-transform:none;font-family:var(--body);font-weight:600;font-size:1.12rem;padding:0;margin-bottom:.15rem}
+  .hint{display:block;font-size:1rem;line-height:1.4;color:var(--olive-70);margin:0 0 .5rem}
+  .choices{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.4rem}
+  .choice{position:relative}
+  .choice input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .choice span{display:block;padding:.6rem 1rem;border:1px solid var(--olive-70);background:var(--cream);font-size:1.05rem;line-height:1.25;cursor:pointer;transition:background .15s,color .15s}
+  .choice input:hover+span{background:var(--olive-08)}
+  .choice input:checked+span{background:var(--olive);color:var(--cream);border-color:var(--olive)}
+  .choice input:focus-visible+span{outline:3px solid var(--olive);outline-offset:3px}
+  .choice input:disabled+span{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+  .row{display:grid;gap:1rem}
+  @media(min-width:600px){.row.two{grid-template-columns:1fr 1fr}}
+  label.field{display:block;font-weight:600;font-size:1.08rem}
+  select,input[type=number]{display:block;width:100%;margin-top:.4rem;font:inherit;font-weight:400;color:var(--olive);background:var(--cream);border:1px solid var(--olive-70);border-radius:0;padding:.55rem .75rem;min-height:2.9rem}
+  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--olive) 50%),linear-gradient(135deg,var(--olive) 50%,transparent 50%);background-position:calc(100% - 1.1rem) 55%,calc(100% - .75rem) 55%;background-size:.35rem .35rem;background-repeat:no-repeat;padding-right:2.2rem}
+  .check{display:flex;gap:.7rem;align-items:flex-start;margin:.35rem 0;font-size:1.08rem;cursor:pointer}
+  .check input{width:1.25rem;height:1.25rem;margin-top:.25rem;accent-color:var(--olive);flex:none}
+  .check small{display:block;color:var(--olive-70);font-size:.98rem}
+  .sub{margin:.75rem 0 0 1.95rem;padding-left:1rem;border-left:2px solid var(--lavender)}
+  [hidden]{display:none!important}
+  /* Results */
+  .results{background:var(--olive);color:var(--cream);padding:1.75rem 1.5rem}
+  @media(min-width:600px){.results{padding:2rem}}
+  .results h2{font-size:1.3rem;margin:0 0 1rem;color:var(--cream)}
+  .progress{font-size:1.05rem;opacity:.9}
+  .bar{height:6px;background:rgba(246,244,238,.2);margin:.6rem 0 0}
+  .bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .25s}
+  .big{background:var(--cream);color:var(--olive);padding:1.1rem 1.2rem;margin-bottom:1.25rem}
+  .big .lbl{font-size:1rem;margin:0}
+  .big .amt{font-family:var(--heading);font-size:2.2rem;line-height:1.1;margin:.2rem 0}
+  .big .amt small{font-family:var(--body);font-size:1.1rem;white-space:nowrap}
+  .big .from{display:block;font-family:var(--body);font-size:1.05rem;line-height:1.3}
+  .mbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--olive);color:var(--cream);padding:.8rem 5vw;box-shadow:0 -4px 16px rgba(0,0,0,.18);font-size:1.05rem}
+  .mbar a{color:var(--olive);background:var(--lavender);text-decoration:none;font-weight:600;padding:.55rem 1rem;white-space:nowrap}
+  .mbar strong{font-family:var(--heading);font-weight:400;text-transform:uppercase;color:var(--gold)}
+  @media(min-width:960px){.mbar{display:none!important}}
+  body.has-mbar{padding-bottom:4.5rem}
+  @media(min-width:960px){body.has-mbar{padding-bottom:0}}
+  .lines{list-style:none;margin:.5rem 0 0;padding:0;font-size:1rem}
+  .lines li{display:flex;justify-content:space-between;gap:1rem;padding:.3rem 0;border-top:1px dashed var(--olive-15)}
+  .lines li span:last-child{white-space:nowrap;font-weight:600}
+  .group{margin:0 0 1.25rem}
+  .group h3{font-size:1.02rem;margin:0 0 .35rem;color:var(--lavender);letter-spacing:.04em}
+  .group .lines li{border-top-color:rgba(246,244,238,.22)}
+  .group .none{font-size:1rem;opacity:.8;margin:0}
+  .note{font-size:.98rem;opacity:.9;margin:.25rem 0 0}
+  .cta{display:block;text-align:center;background:var(--lavender);color:var(--olive);text-decoration:none;font-family:var(--body);font-weight:600;font-size:1.15rem;padding:1.15rem 2rem;margin:1.5rem 0 .75rem;border:2px solid var(--lavender);transition:background .15s,color .15s}
+  .cta:hover{background:transparent;color:var(--cream)}
+  .cta:focus-visible{outline-color:var(--gold)}
+  .disclaimer{font-size:.95rem;opacity:.88;margin:0}
+  .custom{background:var(--cream);color:var(--olive);padding:1.25rem;margin-bottom:1rem}
+  .custom p{margin:.25rem 0 0}
+  footer{text-align:center;font-size:.98rem;color:var(--olive-70);padding:0 5vw 3rem}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#calc">Skip to the estimate form</a>
+<header class="site-header">
+  <a class="wordmark" href="https://www.meadowaccounting.co">Meadow Accounting &amp; Advisory</a>
+  <a class="back" href="https://www.meadowaccounting.co/services">&larr; Back to services</a>
+</header>
+
+<section class="hero" aria-labelledby="title">
+  <h1 id="title">What would bookkeeping cost?</h1>
+  <p>Answer a few quick questions about your business and get a ballpark estimate for ongoing bookkeeping and any catch-up work, before we ever talk.</p>
+  <p class="fine">Takes about two minutes. Everything is calculated right here in your browser. Nothing you enter is saved or sent anywhere.</p>
+</section>
+
+<main id="calc">
+<div class="layout">
+<form id="estimator" novalidate onsubmit="return false">
+
+  <section class="section" aria-labelledby="s1">
+    <h2 id="s1"><span class="num" aria-hidden="true">1</span>Your business</h2>
+    <p class="intro">The basics that shape how much goes into your books each month.</p>
+
+    <fieldset>
+      <legend>About how much revenue comes in each month?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="revenue" value="lt10"><span>Under $10k</span></label>
+        <label class="choice"><input type="radio" name="revenue" value="10to25"><span>$10k–$25k</span></label>
+        <label class="choice"><input type="radio" name="revenue" value="25to50"><span>$25k–$50k</span></label>
+        <label class="choice"><input type="radio" name="revenue" value="gt50"><span>Over $50k</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>What industry are you in?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="industry" value="service"><span>Service</span></label>
+        <label class="choice"><input type="radio" name="industry" value="retail"><span>Retail / e-commerce</span></label>
+        <label class="choice"><input type="radio" name="industry" value="foodcon"><span>Food / construction</span></label>
+        <label class="choice"><input type="radio" name="industry" value="realestate"><span>Real estate / multiple entities</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How many ways does your business make money?</legend>
+      <span class="hint">For example: services plus product sales plus rental income would be three.</span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="streams" value="1"><span>One</span></label>
+        <label class="choice"><input type="radio" name="streams" value="2"><span>Two</span></label>
+        <label class="choice"><input type="radio" name="streams" value="3"><span>Three or more</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Do you track inventory?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="inventory" value="no"><span>No</span></label>
+        <label class="choice"><input type="radio" name="inventory" value="yes"><span>Yes</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Do you collect sales tax?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="salesTax" value="none"><span>No</span></label>
+        <label class="choice"><input type="radio" name="salesTax" value="single"><span>Yes, in one state</span></label>
+        <label class="choice"><input type="radio" name="salesTax" value="multi"><span>Yes, in more than one state</span></label>
+      </div>
+    </fieldset>
+
+    <label class="field" for="entities">How many additional businesses or entities would need their own books?
+      <span class="hint" style="font-weight:400">Enter 0 if it's just this one business.</span>
+      <input type="number" id="entities" name="entities" min="0" max="20" step="1" value="0" inputmode="numeric">
+    </label>
+  </section>
+
+  <section class="section" aria-labelledby="s2">
+    <h2 id="s2"><span class="num" aria-hidden="true">2</span>Accounts &amp; money in</h2>
+    <p class="intro">Every account gets reconciled, so this is a big piece of the work.</p>
+
+    <fieldset>
+      <legend>How many business accounts would I reconcile?</legend>
+      <span class="hint">Count bank accounts, credit cards, and loans together.</span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="accounts" value="0"><span>None yet</span></label>
+        <label class="choice"><input type="radio" name="accounts" value="1"><span>1–2</span></label>
+        <label class="choice"><input type="radio" name="accounts" value="3"><span>3–4</span></label>
+        <label class="choice"><input type="radio" name="accounts" value="5"><span>5 or more</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How many payment processors do you use?</legend>
+      <span class="hint">Square, Stripe, Toast, PayPal, Shopify Payments, and the like.</span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="processors" value="0"><span>None</span></label>
+        <label class="choice"><input type="radio" name="processors" value="1"><span>One</span></label>
+        <label class="choice"><input type="radio" name="processors" value="2"><span>Two or more</span></label>
+      </div>
+      <p class="hint" id="posNote" hidden style="margin-top:.5rem">Processor reconciliation is included in your estimate so your financial statements tie out to what actually hit the bank.</p>
+    </fieldset>
+  </section>
+
+  <section class="section" aria-labelledby="s3">
+    <h2 id="s3"><span class="num" aria-hidden="true">3</span>Your team</h2>
+
+    <fieldset>
+      <legend>Who works in the business besides you?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="workforce" value="none"><span>Just me</span></label>
+        <label class="choice"><input type="radio" name="workforce" value="contractors"><span>Contractors only</span></label>
+        <label class="choice"><input type="radio" name="workforce" value="employees"><span>Employees (with or without contractors)</span></label>
+      </div>
+    </fieldset>
+
+    <div id="employeeBlock" hidden>
+      <div class="row two">
+        <label class="field" for="empBand">How many employees?
+          <select id="empBand" name="empBand">
+            <option value="1-3">1–3</option>
+            <option value="4-8">4–8</option>
+            <option value="9+">9 or more</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="payrollOversight" name="payrollOversight">
+        <span>I'd like Payroll Oversight &amp; Compliance
+          <small>Ongoing review of your payroll filings and setup, billed with your bookkeeping. Without it, a small payroll reconciliation fee applies.</small></span>
+      </label>
+    </div>
+
+    <div id="contractorBlock" hidden>
+      <div class="row two">
+        <label class="field" for="contractors">About how many contractors do you pay in a year?
+          <input type="number" id="contractors" name="contractors" min="0" max="500" step="1" value="0" inputmode="numeric">
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="want1099" name="want1099">
+        <span>I'd like my 1099s prepared each year</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="s4">
+    <h2 id="s4"><span class="num" aria-hidden="true">4</span>Where your books are today</h2>
+
+    <fieldset>
+      <legend>How do you keep your books right now?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="system" value="software"><span>Accounting software (QuickBooks, Xero, etc.)</span></label>
+        <label class="choice"><input type="radio" name="system" value="spreadsheets"><span>Spreadsheets, or nothing yet</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Will we need to switch software or move data from another system?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="transfer" value="no"><span>No</span></label>
+        <label class="choice"><input type="radio" name="transfer" value="yes"><span>Yes</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Is your business already set up in QuickBooks Online or Xero?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="hasGL" value="yes"><span>Yes</span></label>
+        <label class="choice"><input type="radio" name="hasGL" value="no"><span>No</span></label>
+      </div>
+    </fieldset>
+
+    <div class="row two">
+      <label class="field" for="monthsBehind">Months behind this year
+        <span class="hint" style="font-weight:400">Months this year that still need to be caught up.</span>
+        <select id="monthsBehind" name="monthsBehind"></select>
+      </label>
+      <label class="field" for="yearsBehind">Prior years behind
+        <span class="hint" style="font-weight:400">Full past years that were never done or need redoing.</span>
+        <select id="yearsBehind" name="yearsBehind"></select>
+      </label>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="s5">
+    <h2 id="s5"><span class="num" aria-hidden="true">5</span>Billing &amp; extras</h2>
+
+    <fieldset>
+      <legend>How often would you like your financials (and your bill)?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="cadence" value="monthly" checked><span>Monthly</span></label>
+        <label class="choice"><input type="radio" name="cadence" value="quarterly"><span>Quarterly</span></label>
+        <label class="choice" id="annualChoice" hidden><input type="radio" name="cadence" value="annual" id="cadAnnual"><span>Annually</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Optional extras</legend>
+      <label class="check" id="checkinChoice"><input type="checkbox" id="checkins" name="checkins">
+        <span>Quarterly check-in meetings (4 per year)
+          <small>A standing review of your numbers each quarter.</small></span>
+      </label>
+
+      <label class="check"><input type="checkbox" id="stReturns" name="stReturns">
+        <span>North Carolina sales tax return filing</span>
+      </label>
+      <div class="sub" id="stBlock" hidden>
+        <div class="row two">
+          <label class="field" for="stFreq">How often do you file?
+            <select id="stFreq" name="stFreq">
+              <option value="12">Monthly</option>
+              <option value="4" selected>Quarterly</option>
+              <option value="1">Annually</option>
+            </select>
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" id="stReg" name="stReg">
+          <span>I still need to register for NC sales tax</span>
+        </label>
+        <div class="row two" id="stLocalBlock" hidden>
+          <label class="field" for="stLocal">Additional local jurisdictions
+            <input type="number" id="stLocal" name="stLocal" min="0" max="50" step="1" value="0" inputmode="numeric">
+          </label>
+        </div>
+      </div>
+
+      <label class="check"><input type="checkbox" id="bppt" name="bppt">
+        <span>Business personal property tax listing</span>
+      </label>
+      <div class="sub" id="bpptBlock" hidden>
+        <div class="row two">
+          <label class="field" for="counties">Number of counties
+            <input type="number" id="counties" name="counties" min="1" max="20" step="1" value="1" inputmode="numeric">
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </section>
+</form>
+
+<aside class="results" id="resultsCard" aria-labelledby="resultsTitle" tabindex="-1">
+  <h2 id="resultsTitle">Your estimate</h2>
+  <div id="results" aria-live="polite">
+  </div>
+  <a class="cta" id="ctaLink" href="https://app.squarespacescheduling.com/schedule.php?owner=29227054" target="_blank" rel="noopener">Book a free consult</a>
+  <p class="disclaimer">This is an estimate only, based on your answers. It is not a quote or an engagement. Your final price comes after a free consult or a $400 Diagnostic Review of your records, which is required before any cleanup work.</p>
+</aside>
+</div>
+</main>
+
+<div class="mbar" id="mbar" hidden><span id="mbarText"></span><a href="#resultsCard">See details</a></div>
+<footer>
+  <p>&copy; <span id="yr"></span> Meadow Accounting &amp; Advisory &middot; <a href="https://www.meadowaccounting.co">meadowaccounting.co</a></p>
+</footer>
+
+<script id="calc-logic">
+/* All prices live here. Edit these numbers to update the calculator. */
+var RATES = {
+  tiers: {
+    Rooted:   { monthly: 300, quarterly: 650,  annual: 1800, priorYearFlat: 2350 },
+    Rising:   { monthly: 450, quarterly: 950,  annual: null, priorYearFlat: 3500 },
+    Thriving: { monthly: 600, quarterly: 1300, annual: null, priorYearFlat: 4650 }
+  },
+  cadenceMultiplier: { monthly: 1, quarterly: 2, annual: 4 },
+  surcharges: {
+    rootedIndustry: 50,
+    rootedPerEntity: 50,
+    payrollRecon: 25,
+    posRecon: 25
+  },
+  cleanup: { first5Factor: 0.5, after5Factor: 0.75, discountedMonths: 5, priorYearFloorFactor: 7.75, rangeHigh: 1.25, roundTo: 25 },
+  meadowFoundation: 500,
+  diagnosticReview: 400,
+  checkinPerSession: 95,
+  checkinSessions: 4,
+  payrollOversight: { "1-3": 175, "4-8": 225, "9+": 300 },
+  prep1099: { band1to3: 75, band4to8: 125, band9to15: 175, perContractor16plus: 15 },
+  ncSalesTaxRegistration: 175, ncSalesTaxPerLocal: 50, ncSalesTaxReturn: 100,
+  propertyTaxPerCounty: 125,
+  tierThresholds: { rootedMax: 6, risingMax: 13, thrivingMax: 22 }
+};
+
+function pointsFor(a) {
+  var p = 0;
+  p += ({ lt10: 1, "10to25": 2, "25to50": 3, gt50: 4 })[a.revenue] || 0;
+  var n = Number(a.accounts) || 0;
+  p += n <= 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : 3;
+  p += ({ none: 0, contractors: 1, employees: 2 })[a.workforce] || 0;
+  p += ({ service: 0, retail: 1, foodcon: 2, realestate: 3 })[a.industry] || 0;
+  p += ({ "1": 0, "2": 1, "3": 2 })[String(a.streams)] || 0;
+  p += a.inventory === "yes" ? 1 : 0;
+  p += ({ none: 0, single: 1, multi: 2 })[a.salesTax] || 0;
+  p += ({ software: 0, spreadsheets: 2 })[a.system] || 0;
+  p += a.transfer === "yes" ? 1 : 0;
+  var pr = Number(a.processors) || 0;
+  p += pr <= 0 ? 0 : pr === 1 ? 1 : 2;
+  return p;
+}
+
+function tierFor(points) {
+  var t = RATES.tierThresholds;
+  if (points <= t.rootedMax) return "Rooted";
+  if (points <= t.risingMax) return "Rising";
+  if (points <= t.thrivingMax) return "Thriving";
+  return "Custom";
+}
+
+function currentYearCleanup(monthlyRate, months) {
+  var c = RATES.cleanup;
+  if (!months || months <= 0) return 0;
+  return monthlyRate * (c.first5Factor * Math.min(months, c.discountedMonths) + c.after5Factor * Math.max(0, months - c.discountedMonths));
+}
+
+function priorYearFee(tier) {
+  var r = RATES.tiers[tier];
+  return Math.max(r.priorYearFlat, r.monthly * RATES.cleanup.priorYearFloorFactor);
+}
+
+function fee1099(n) {
+  var f = RATES.prep1099;
+  if (!n || n <= 0) return 0;
+  if (n <= 3) return f.band1to3;
+  if (n <= 8) return f.band4to8;
+  if (n <= 15) return f.band9to15;
+  return n * f.perContractor16plus;
+}
+
+function roundTo(x, step) { return Math.round(x / step) * step; }
+
+function estimate(a) {
+  var points = pointsFor(a);
+  var tier = tierFor(points);
+  var out = { points: points, tier: tier, custom: tier === "Custom" };
+  if (out.custom) return out;
+
+  var rate = RATES.tiers[tier];
+  var cadence = a.cadence || "monthly";
+  var cadenceAdjusted = false;
+  if (cadence === "annual" && tier !== "Rooted") { cadence = "monthly"; cadenceAdjusted = true; }
+  var mult = RATES.cadenceMultiplier[cadence];
+  var S = RATES.surcharges;
+
+  var rec = [];
+  rec.push({ label: "Bookkeeping & financials", amount: rate[cadence] });
+  if (tier === "Rooted" && (a.industry === "foodcon" || a.industry === "realestate"))
+    rec.push({ label: "Industry complexity", amount: S.rootedIndustry * mult });
+  var ent = Math.max(0, Math.floor(Number(a.entities) || 0));
+  if (tier === "Rooted" && ent > 0)
+    rec.push({ label: "Additional entities (" + ent + ")", amount: S.rootedPerEntity * ent * mult });
+  if (a.workforce === "employees") {
+    if (a.payrollOversight) rec.push({ label: "Payroll Oversight (" + String(a.empBand).replace("-", "\u2013") + " employees)", amount: RATES.payrollOversight[a.empBand] * mult });
+    else rec.push({ label: "Payroll reconciliation", amount: S.payrollRecon * mult });
+  }
+  if ((Number(a.processors) || 0) >= 1) rec.push({ label: "Payment processor reconciliation", amount: S.posRecon * mult });
+  var recurring = rec.reduce(function (s, l) { return s + l.amount; }, 0);
+
+  var one = [];
+  var months = Math.max(0, Math.min(12, Number(a.monthsBehind) || 0));
+  var years = Math.max(0, Math.min(5, Number(a.yearsBehind) || 0));
+  var cy = currentYearCleanup(rate.monthly, months);
+  var py = years * priorYearFee(tier);
+  var cleanupBase = cy + py;
+  var cleanup = null;
+  if (cleanupBase > 0) {
+    cleanup = {
+      base: cleanupBase, currentYear: cy, priorYears: py, months: months, years: years,
+      low: roundTo(cleanupBase, RATES.cleanup.roundTo),
+      high: roundTo(cleanupBase * RATES.cleanup.rangeHigh, RATES.cleanup.roundTo)
+    };
+    one.push({ label: "Diagnostic Review (required before cleanup)", amount: RATES.diagnosticReview });
+  }
+  if (a.hasGL === "no") one.push({ label: "Meadow Foundation (QuickBooks Online or Xero setup)", amount: RATES.meadowFoundation });
+  if (a.stReturns && a.stReg) {
+    var loc = Math.max(0, Math.floor(Number(a.stLocal) || 0));
+    one.push({ label: "NC sales tax registration" + (loc ? " (+" + loc + " local)" : ""), amount: RATES.ncSalesTaxRegistration + loc * RATES.ncSalesTaxPerLocal });
+  }
+
+  var yr = [];
+  if (tier === "Thriving") rec.push({ label: "Quarterly check-ins included", amount: 0, text: "$0" });
+  else if (a.checkins) {
+    yr.push({ label: "Quarterly check-ins (4 \u00d7 $" + RATES.checkinPerSession + ")", amount: RATES.checkinPerSession * RATES.checkinSessions });
+  }
+  var nC = Math.max(0, Math.floor(Number(a.contractors) || 0));
+  if (a.want1099 && a.workforce !== "none" && nC > 0) yr.push({ label: "1099 preparation (" + nC + " contractor" + (nC === 1 ? "" : "s") + ")", amount: fee1099(nC) });
+  if (a.stReturns) {
+    var f = Number(a.stFreq) || 4;
+    yr.push({ label: "NC sales tax returns ($" + RATES.ncSalesTaxReturn + " per filing \u00d7 " + f + ")", amount: RATES.ncSalesTaxReturn * f });
+  }
+  if (a.bppt) {
+    var c = Math.max(1, Math.floor(Number(a.counties) || 1));
+    yr.push({ label: "Property tax listing (" + c + " count" + (c === 1 ? "y" : "ies") + ")", amount: RATES.propertyTaxPerCounty * c });
+  }
+
+  out.cadence = cadence; out.cadenceAdjusted = cadenceAdjusted;
+  out.annualAvailable = rate.annual != null; out.checkinsIncluded = tier === "Thriving";
+  out.recurringLines = rec; out.recurring = recurring;
+  out.cleanup = cleanup; out.oneTimeLines = one; out.yearlyLines = yr;
+  return out;
+}
+
+if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: pointsFor, tierFor: tierFor, currentYearCleanup: currentYearCleanup, priorYearFee: priorYearFee, fee1099: fee1099, estimate: estimate };
+</script>
+
+<script>
+(function () {
+  var form = document.getElementById("estimator");
+  var resultsEl = document.getElementById("results");
+  var REQUIRED = ["revenue", "industry", "streams", "inventory", "salesTax", "accounts", "processors", "workforce", "system", "transfer", "hasGL"];
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  function fillSelect(id, max) {
+    var s = document.getElementById(id);
+    for (var i = 0; i <= max; i++) { var o = document.createElement("option"); o.value = i; o.textContent = i === 0 ? "None, I'm caught up" : i; s.appendChild(o); }
+  }
+  fillSelect("monthsBehind", 12); fillSelect("yearsBehind", 5);
+
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  function radio(name) { var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : null; }
+  function val(id) { return document.getElementById(id).value; }
+  function chk(id) { return document.getElementById(id).checked; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function lines(arr) {
+    return '<ul class="lines">' + arr.map(function (l) {
+      return "<li><span>" + esc(l.label) + "</span><span>" + (l.text ? esc(l.text) : money(l.amount)) + "</span></li>";
+    }).join("") + "</ul>";
+  }
+
+  function answers() {
+    return {
+      revenue: radio("revenue"), industry: radio("industry"), streams: radio("streams"), inventory: radio("inventory"),
+      salesTax: radio("salesTax"), accounts: radio("accounts"), processors: radio("processors"), workforce: radio("workforce"),
+      system: radio("system"), transfer: radio("transfer"), hasGL: radio("hasGL"), cadence: radio("cadence"),
+      entities: val("entities"), empBand: val("empBand"), payrollOversight: chk("payrollOversight"),
+      contractors: val("contractors"), want1099: chk("want1099"),
+      monthsBehind: val("monthsBehind"), yearsBehind: val("yearsBehind"),
+      checkins: chk("checkins"), stReturns: chk("stReturns"), stFreq: val("stFreq"), stReg: chk("stReg"), stLocal: val("stLocal"),
+      bppt: chk("bppt"), counties: val("counties")
+    };
+  }
+
+  function render() {
+    var a = answers();
+    document.getElementById("employeeBlock").hidden = a.workforce !== "employees";
+    document.getElementById("contractorBlock").hidden = !(a.workforce === "contractors" || a.workforce === "employees");
+    document.getElementById("posNote").hidden = !(Number(a.processors) >= 1);
+    document.getElementById("stBlock").hidden = !a.stReturns;
+    document.getElementById("stLocalBlock").hidden = !(a.stReturns && a.stReg);
+    document.getElementById("bpptBlock").hidden = !a.bppt;
+
+    var mbar = document.getElementById("mbar"), mtext = document.getElementById("mbarText");
+    function setBar(html) { mbar.hidden = !html; document.body.classList.toggle("has-mbar", !!html); if (html) mtext.innerHTML = html; }
+    var answered = REQUIRED.filter(function (k) { return a[k] !== null; }).length;
+    var annual = document.getElementById("cadAnnual");
+    function showAnnual(on) {
+      document.getElementById("annualChoice").hidden = !on;
+      if (!on && annual.checked) form.querySelector('input[name="cadence"][value="monthly"]').checked = true;
+    }
+
+    if (answered < REQUIRED.length) {
+      showAnnual(false); document.getElementById("checkinChoice").hidden = false;
+      resultsEl.innerHTML = '<p class="progress">' + answered + " of " + REQUIRED.length + " questions answered. Your estimate will appear here once they're all done.</p>" +
+        '<div class="bar" aria-hidden="true"><i style="width:' + Math.round(answered / REQUIRED.length * 100) + '%"></i></div>';
+      setBar("");
+      return;
+    }
+
+    var e = estimate(a);
+    if (e.custom) {
+      showAnnual(false); document.getElementById("checkinChoice").hidden = false;
+      resultsEl.innerHTML = '<div class="custom" style="margin-top:0"><strong>Custom quote, let\'s talk.</strong><p>Your business has more moving parts than a standard package covers. That\'s a good thing! Book a free consult and I\'ll put together pricing built around how you actually operate.</p></div>';
+      setBar("<strong>Custom quote</strong>");
+      return;
+    }
+
+    showAnnual(e.annualAvailable);
+    document.getElementById("checkinChoice").hidden = e.checkinsIncluded;
+
+    var per = { monthly: "month", quarterly: "quarter", annual: "year" }[e.cadence];
+    var h = "";
+    h += '<div class="big"><p class="lbl">Estimated ongoing fee</p><p class="amt"><span class="from">starting at</span>' + money(e.recurring) + " <small>/ " + per + "</small></p>";
+    h += lines(e.recurringLines);
+    h += "</div>";
+
+    h += '<div class="group"><h3>One-time</h3>';
+    if (e.cleanup || e.oneTimeLines.length) {
+      var ol = [];
+      if (e.cleanup) {
+        var parts = [];
+        if (e.cleanup.months) parts.push(e.cleanup.months + " month" + (e.cleanup.months === 1 ? "" : "s") + " this year");
+        if (e.cleanup.years) parts.push(e.cleanup.years + " prior year" + (e.cleanup.years === 1 ? "" : "s"));
+        ol.push({ label: "Cleanup & catch-up (" + parts.join(" + ") + ")", text: money(e.cleanup.low) + "\u2013" + money(e.cleanup.high) });
+      }
+      h += lines(ol.concat(e.oneTimeLines));
+      if (e.cleanup) h += '<p class="note">Cleanup is a range and may change once I\'ve reviewed your records.</p>';
+    } else h += '<p class="none">Nothing one-time based on your answers.</p>';
+    h += "</div>";
+
+    h += '<div class="group"><h3>Yearly / per filing</h3>';
+    h += e.yearlyLines.length ? lines(e.yearlyLines) : '<p class="none">No yearly extras selected.</p>';
+    h += "</div>";
+    resultsEl.innerHTML = h;
+    setBar("<strong>Estimate</strong> &middot; from " + money(e.recurring) + "/" + ({ month: "mo", quarter: "qtr", year: "yr" })[per]);
+  }
+
+  form.addEventListener("input", render);
+  form.addEventListener("change", render);
+  render();
+})();
+</script>
+</body>
+</html>
