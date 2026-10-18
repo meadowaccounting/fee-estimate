@@ -41,7 +41,6 @@
   .hero{background:var(--olive);color:var(--cream);text-align:center;padding:3.5rem 6vw 3rem}
   .hero h1{font-size:clamp(1.9rem,6vw,3.2rem);margin:0 0 .75rem}
   .hero p{max-width:40rem;margin:0 auto;font-size:1.2rem;color:var(--cream)}
-  .hero .fine{margin-top:1rem;font-size:1rem;opacity:.85}
   /* Layout */
   main{max-width:1180px;margin:0 auto;padding:2rem 5vw 4rem}
   .layout{display:grid;gap:2rem}
@@ -223,32 +222,6 @@
       </div>
     </fieldset>
 
-    <div id="employeeBlock" hidden>
-      <div class="row two">
-        <label class="field" for="empBand">How many employees?
-          <select id="empBand" name="empBand">
-            <option value="1-3">1–3</option>
-            <option value="4-8">4–8</option>
-            <option value="9+">9 or more</option>
-          </select>
-        </label>
-      </div>
-      <label class="check"><input type="checkbox" id="payrollOversight" name="payrollOversight">
-        <span>I'd like Payroll Oversight &amp; Compliance
-          <small>Ongoing review of your payroll filings and setup, billed with your bookkeeping. Without it, a small payroll reconciliation fee applies.</small></span>
-      </label>
-    </div>
-
-    <div id="contractorBlock" hidden>
-      <div class="row two">
-        <label class="field" for="contractors">About how many contractors do you pay in a year?
-          <input type="number" id="contractors" name="contractors" min="0" max="500" step="1" value="0" inputmode="numeric">
-        </label>
-      </div>
-      <label class="check"><input type="checkbox" id="want1099" name="want1099">
-        <span>I'd like my 1099s prepared each year</span>
-      </label>
-    </div>
   </section>
 
   <section class="section" aria-labelledby="s4">
@@ -291,7 +264,7 @@
   </section>
 
   <section class="section" aria-labelledby="s5">
-    <h2 id="s5"><span class="num" aria-hidden="true">5</span>Billing &amp; extras</h2>
+    <h2 id="s5"><span class="num" aria-hidden="true">5</span>Billing</h2>
 
     <fieldset>
       <legend>How often would you like your financials (and your bill)?</legend>
@@ -302,47 +275,6 @@
       </div>
     </fieldset>
 
-    <fieldset>
-      <legend>Optional extras</legend>
-      <label class="check" id="checkinChoice"><input type="checkbox" id="checkins" name="checkins">
-        <span>Quarterly check-in meetings (4 per year)
-          <small>A standing review of your numbers each quarter.</small></span>
-      </label>
-
-      <label class="check"><input type="checkbox" id="stReturns" name="stReturns">
-        <span>North Carolina sales tax return filing</span>
-      </label>
-      <div class="sub" id="stBlock" hidden>
-        <div class="row two">
-          <label class="field" for="stFreq">How often do you file?
-            <select id="stFreq" name="stFreq">
-              <option value="12">Monthly</option>
-              <option value="4" selected>Quarterly</option>
-              <option value="1">Annually</option>
-            </select>
-          </label>
-        </div>
-        <label class="check"><input type="checkbox" id="stReg" name="stReg">
-          <span>I still need to register for NC sales tax</span>
-        </label>
-        <div class="row two" id="stLocalBlock" hidden>
-          <label class="field" for="stLocal">Additional local jurisdictions
-            <input type="number" id="stLocal" name="stLocal" min="0" max="50" step="1" value="0" inputmode="numeric">
-          </label>
-        </div>
-      </div>
-
-      <label class="check"><input type="checkbox" id="bppt" name="bppt">
-        <span>Business personal property tax listing</span>
-      </label>
-      <div class="sub" id="bpptBlock" hidden>
-        <div class="row two">
-          <label class="field" for="counties">Number of counties
-            <input type="number" id="counties" name="counties" min="1" max="20" step="1" value="1" inputmode="numeric">
-          </label>
-        </div>
-      </div>
-    </fieldset>
   </section>
 </form>
 
@@ -376,15 +308,9 @@ var RATES = {
     payrollRecon: 25,
     posRecon: 25
   },
-  cleanup: { first5Factor: 0.5, after5Factor: 0.75, discountedMonths: 5, priorYearFloorFactor: 7.75, rangeHigh: 1.25, roundTo: 25 },
+  cleanup: { first5Factor: 0.5, after5Factor: 0.75, discountedMonths: 5, priorYearFloorFactor: 7.75 },
   meadowFoundation: 500,
   diagnosticReview: 400,
-  checkinPerSession: 95,
-  checkinSessions: 4,
-  payrollOversight: { "1-3": 175, "4-8": 225, "9+": 300 },
-  prep1099: { band1to3: 75, band4to8: 125, band9to15: 175, perContractor16plus: 15 },
-  ncSalesTaxRegistration: 175, ncSalesTaxPerLocal: 50, ncSalesTaxReturn: 100,
-  propertyTaxPerCounty: 125,
   tierThresholds: { rootedMax: 6, risingMax: 13, thrivingMax: 22 }
 };
 
@@ -424,17 +350,6 @@ function priorYearFee(tier) {
   return Math.max(r.priorYearFlat, r.monthly * RATES.cleanup.priorYearFloorFactor);
 }
 
-function fee1099(n) {
-  var f = RATES.prep1099;
-  if (!n || n <= 0) return 0;
-  if (n <= 3) return f.band1to3;
-  if (n <= 8) return f.band4to8;
-  if (n <= 15) return f.band9to15;
-  return n * f.perContractor16plus;
-}
-
-function roundTo(x, step) { return Math.round(x / step) * step; }
-
 function estimate(a) {
   var points = pointsFor(a);
   var tier = tierFor(points);
@@ -455,10 +370,7 @@ function estimate(a) {
   var ent = Math.max(0, Math.floor(Number(a.entities) || 0));
   if (tier === "Rooted" && ent > 0)
     rec.push({ label: "Additional entities (" + ent + ")", amount: S.rootedPerEntity * ent * mult });
-  if (a.workforce === "employees") {
-    if (a.payrollOversight) rec.push({ label: "Payroll Oversight (" + String(a.empBand).replace("-", "\u2013") + " employees)", amount: RATES.payrollOversight[a.empBand] * mult });
-    else rec.push({ label: "Payroll reconciliation", amount: S.payrollRecon * mult });
-  }
+  if (a.workforce === "employees") rec.push({ label: "Payroll reconciliation", amount: S.payrollRecon * mult });
   if ((Number(a.processors) || 0) >= 1) rec.push({ label: "Payment processor reconciliation", amount: S.posRecon * mult });
   var recurring = rec.reduce(function (s, l) { return s + l.amount; }, 0);
 
@@ -470,43 +382,19 @@ function estimate(a) {
   var cleanupBase = cy + py;
   var cleanup = null;
   if (cleanupBase > 0) {
-    cleanup = {
-      base: cleanupBase, currentYear: cy, priorYears: py, months: months, years: years,
-      low: roundTo(cleanupBase, RATES.cleanup.roundTo),
-      high: roundTo(cleanupBase * RATES.cleanup.rangeHigh, RATES.cleanup.roundTo)
-    };
+    cleanup = { base: cleanupBase, currentYear: cy, priorYears: py, months: months, years: years };
     one.push({ label: "Diagnostic Review (required before cleanup)", amount: RATES.diagnosticReview });
   }
   if (a.hasGL === "no") one.push({ label: "Meadow Foundation (QuickBooks Online or Xero setup)", amount: RATES.meadowFoundation });
-  if (a.stReturns && a.stReg) {
-    var loc = Math.max(0, Math.floor(Number(a.stLocal) || 0));
-    one.push({ label: "NC sales tax registration" + (loc ? " (+" + loc + " local)" : ""), amount: RATES.ncSalesTaxRegistration + loc * RATES.ncSalesTaxPerLocal });
-  }
-
-  var yr = [];
-  if (tier === "Thriving") rec.push({ label: "Quarterly check-ins included", amount: 0, text: "$0" });
-  else if (a.checkins) {
-    yr.push({ label: "Quarterly check-ins (4 \u00d7 $" + RATES.checkinPerSession + ")", amount: RATES.checkinPerSession * RATES.checkinSessions });
-  }
-  var nC = Math.max(0, Math.floor(Number(a.contractors) || 0));
-  if (a.want1099 && a.workforce !== "none" && nC > 0) yr.push({ label: "1099 preparation (" + nC + " contractor" + (nC === 1 ? "" : "s") + ")", amount: fee1099(nC) });
-  if (a.stReturns) {
-    var f = Number(a.stFreq) || 4;
-    yr.push({ label: "NC sales tax returns ($" + RATES.ncSalesTaxReturn + " per filing \u00d7 " + f + ")", amount: RATES.ncSalesTaxReturn * f });
-  }
-  if (a.bppt) {
-    var c = Math.max(1, Math.floor(Number(a.counties) || 1));
-    yr.push({ label: "Property tax listing (" + c + " count" + (c === 1 ? "y" : "ies") + ")", amount: RATES.propertyTaxPerCounty * c });
-  }
 
   out.cadence = cadence; out.cadenceAdjusted = cadenceAdjusted;
-  out.annualAvailable = rate.annual != null; out.checkinsIncluded = tier === "Thriving";
+  out.annualAvailable = rate.annual != null;
   out.recurringLines = rec; out.recurring = recurring;
-  out.cleanup = cleanup; out.oneTimeLines = one; out.yearlyLines = yr;
+  out.cleanup = cleanup; out.oneTimeLines = one;
   return out;
 }
 
-if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: pointsFor, tierFor: tierFor, currentYearCleanup: currentYearCleanup, priorYearFee: priorYearFee, fee1099: fee1099, estimate: estimate };
+if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: pointsFor, tierFor: tierFor, currentYearCleanup: currentYearCleanup, priorYearFee: priorYearFee, estimate: estimate };
 </script>
 
 <script>
@@ -538,22 +426,14 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
       revenue: radio("revenue"), industry: radio("industry"), streams: radio("streams"), inventory: radio("inventory"),
       salesTax: radio("salesTax"), accounts: radio("accounts"), processors: radio("processors"), workforce: radio("workforce"),
       system: radio("system"), transfer: radio("transfer"), hasGL: radio("hasGL"), cadence: radio("cadence"),
-      entities: val("entities"), empBand: val("empBand"), payrollOversight: chk("payrollOversight"),
-      contractors: val("contractors"), want1099: chk("want1099"),
-      monthsBehind: val("monthsBehind"), yearsBehind: val("yearsBehind"),
-      checkins: chk("checkins"), stReturns: chk("stReturns"), stFreq: val("stFreq"), stReg: chk("stReg"), stLocal: val("stLocal"),
-      bppt: chk("bppt"), counties: val("counties")
+      entities: val("entities"),
+      monthsBehind: val("monthsBehind"), yearsBehind: val("yearsBehind")
     };
   }
 
   function render() {
     var a = answers();
-    document.getElementById("employeeBlock").hidden = a.workforce !== "employees";
-    document.getElementById("contractorBlock").hidden = !(a.workforce === "contractors" || a.workforce === "employees");
     document.getElementById("posNote").hidden = !(Number(a.processors) >= 1);
-    document.getElementById("stBlock").hidden = !a.stReturns;
-    document.getElementById("stLocalBlock").hidden = !(a.stReturns && a.stReg);
-    document.getElementById("bpptBlock").hidden = !a.bppt;
 
     var mbar = document.getElementById("mbar"), mtext = document.getElementById("mbarText");
     function setBar(html) { mbar.hidden = !html; document.body.classList.toggle("has-mbar", !!html); if (html) mtext.innerHTML = html; }
@@ -565,7 +445,7 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
     }
 
     if (answered < REQUIRED.length) {
-      showAnnual(false); document.getElementById("checkinChoice").hidden = false;
+      showAnnual(false);
       resultsEl.innerHTML = '<p class="progress">' + answered + " of " + REQUIRED.length + " questions answered. Your estimate will appear here once they're all done.</p>" +
         '<div class="bar" aria-hidden="true"><i style="width:' + Math.round(answered / REQUIRED.length * 100) + '%"></i></div>';
       setBar("");
@@ -574,19 +454,17 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
 
     var e = estimate(a);
     if (e.custom) {
-      showAnnual(false); document.getElementById("checkinChoice").hidden = false;
+      showAnnual(false);
       resultsEl.innerHTML = '<div class="custom" style="margin-top:0"><strong>Custom quote, let\'s talk.</strong><p>Your business has more moving parts than a standard package covers. That\'s a good thing! Book a free consult and I\'ll put together pricing built around how you actually operate.</p></div>';
       setBar("<strong>Custom quote</strong>");
       return;
     }
 
     showAnnual(e.annualAvailable);
-    document.getElementById("checkinChoice").hidden = e.checkinsIncluded;
 
     var per = { monthly: "month", quarterly: "quarter", annual: "year" }[e.cadence];
     var h = "";
     h += '<div class="big"><p class="lbl">Estimated ongoing fee</p><p class="amt"><span class="from">starting at</span>' + money(e.recurring) + " <small>/ " + per + "</small></p>";
-    h += lines(e.recurringLines);
     h += "</div>";
 
     h += '<div class="group"><h3>One-time</h3>';
@@ -596,16 +474,13 @@ if (typeof module !== "undefined") module.exports = { RATES: RATES, pointsFor: p
         var parts = [];
         if (e.cleanup.months) parts.push(e.cleanup.months + " month" + (e.cleanup.months === 1 ? "" : "s") + " this year");
         if (e.cleanup.years) parts.push(e.cleanup.years + " prior year" + (e.cleanup.years === 1 ? "" : "s"));
-        ol.push({ label: "Cleanup & catch-up (" + parts.join(" + ") + ")", text: money(e.cleanup.low) + "\u2013" + money(e.cleanup.high) });
+        ol.push({ label: "Cleanup & catch-up (" + parts.join(" + ") + ")", text: "Starting at " + money(e.cleanup.base) });
       }
       h += lines(ol.concat(e.oneTimeLines));
-      if (e.cleanup) h += '<p class="note">Cleanup is a range and may change once I\'ve reviewed your records.</p>';
+      if (e.cleanup) h += '<p class="note">Cleanup pricing may change once I\'ve reviewed your records.</p>';
     } else h += '<p class="none">Nothing one-time based on your answers.</p>';
     h += "</div>";
 
-    h += '<div class="group"><h3>Yearly / per filing</h3>';
-    h += e.yearlyLines.length ? lines(e.yearlyLines) : '<p class="none">No yearly extras selected.</p>';
-    h += "</div>";
     resultsEl.innerHTML = h;
     setBar("<strong>Estimate</strong> &middot; from " + money(e.recurring) + "/" + ({ month: "mo", quarter: "qtr", year: "yr" })[per]);
   }
